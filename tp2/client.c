@@ -16,11 +16,11 @@ int main(int argc, char *argv[])
   static struct sockaddr_in addr_serveur;
   struct hostent* host_serveur;
   socklen_t lg;
-  int sock, port = 4020;
+  int sock, port = 4000;
   char* hostname = "localhost";
   char *msg = "bonjour";
   char buffer[TAILLEBUF];
-  char* reponse = "rien";
+  char* reponse;
   int nb_octets;
 
   if(argc >= 2)
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
   if(argc == 3)
     port = atoi(argv[2]);
 
-  sock = creerSocketUDP(port);
+  sock = creerSocketUDP(0);
   if(sock == -1)
   {
     perror("erreur création socket");
@@ -52,14 +52,14 @@ int main(int argc, char *argv[])
 
   if(connect(sock,(struct sockaddr*)&addr_serveur,sizeof(struct sockaddr_in)) == -1)
   {
-    perror("erreur connexion serveur");
+    printf("erreur connexion serveur %d\n",errno);
     exit(1);
   }
 
   nb_octets = write(sock,msg,strlen(msg)+1);
   nb_octets = read(sock,reponse,TAILLEBUF);
 
-  printf("reponse reçu : %s\n",reponse);
+  printf("reponse reçu : %s\n",buffer);
 
   close(sock);
 

@@ -48,7 +48,10 @@ int main(int argc, char const *argv[])
   nb_octets = read(socket_service,message,TAILLEBUF);
   chaine_recue = (char*)malloc(nb_octets * sizeof(char));
   memcpy(chaine_recue,message,nb_octets);
-  write(socket_service,reponse,strlen(reponse)+1);
+  if(write(socket_service,reponse,strlen(reponse)+1) == -1)
+  {
+    perror("error\n");
+  }
 
   close(socket_service);
   close(socket_ecoute);
