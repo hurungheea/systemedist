@@ -8,6 +8,7 @@
 #include <getopt.h>
 #include <string.h>
 #include "common.h"
+#include <sys/types.h>
 
 #define TAILLEBUF 20
 
@@ -41,8 +42,12 @@ int main(int argc, char const *argv[])
   while(1)
   {
     socket_service = accept(socket_ecoute,(struct sockaddr*)&addr_client,&lg_addr);
-    if(fork()==0)
-      
+    if(fork() == 0)
+    {
+      close(socket_ecoute);
+      traiter_communication();
+    }
+
   }
   if(socket_service == -1)
   {

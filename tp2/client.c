@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
   }
 
   nb_octets = write(sock,msg,strlen(msg)+1);
-  nb_octets = read(sock,reponse,TAILLEBUF);
+  nb_octets = read(sock,buffer,TAILLEBUF);
 
   printf("reponse reçu : %s\n",buffer);
 

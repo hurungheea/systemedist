@@ -11,7 +11,7 @@
 #include <getopt.h>
 #include <string.h>
 
-enum requette_t
+enum requete_t
 {
   FACTORIEL,
   PUISSANCE,
@@ -20,9 +20,9 @@ enum requette_t
 
 typedef struct
 {
-  enum requette_t requette;
+  enum requete_t type;
   int taille;
-}Requette;
+}requete;
 
 
 int creerSocketUDP(int port);

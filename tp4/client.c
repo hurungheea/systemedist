@@ -8,17 +8,16 @@
 #include <getopt.h>
 #include <string.h>
 #include "common.h"
-#include "calculs.h"
 
 #define TAILLEBUF 20
 
 void displayChoice();
-int clientFactoriel(int nb);
+long clientFactoriel(int nb, int sock);
 
 int main(int argc, char *argv[])
 {
   int sock;
-
+  long res = 0;
   sock = creerSocketUDP(0);
   char k;
   int nb = 0;
@@ -34,7 +33,7 @@ int main(int argc, char *argv[])
     case 49:
       printf("Factoriel de ?:");
       scanf(" %d\n",&nb);
-      clientFactoriel(nb);
+      res = clientFactoriel(nb,sock);
       break;
     case 50:
       printf("2\n");
@@ -49,27 +48,28 @@ int main(int argc, char *argv[])
 void displayChoice()
 {
   printf("1. Factoriel(n)\n2. Puissance(n)\n3. Moyenne | Min | Max(1..N)\n");
-  printf("Entré un nombre entre 1 et 3 ...");
+  printf("Entré un nombre entre 1 et 3 ... ");
 }
 
-int clientFactoriel(int nb)
+long clientFactoriel(int nb,int sock)
 {
-  struct requette req;
+  requete req;
   char* message;
   int taille;
   int nb_octets;
   long resultat;
   req.type = FACTORIEL;
   req.taille = sizeof(int);
-  taille = sizeof((struct requette)+ sizeof(int));
+  taille = sizeof(requete)+ sizeof(int);
   message = (char*)malloc(taille);
-  memcpy(message,sizeof(req),&nb,sizeof(nb));
+  memcpy(message,&req,sizeof(req));
+  memcpy(message+sizeof(req),&nb,sizeof(nb));
   nb_octets = write(sock,message,taille);
   free(message);
   if((nb_octets)==0||(nb_octets == -1))
-    return -1;
+    return (long)-1;
   nb_octets = read(sock,&resultat,sizeof(long));
   if((nb_octets)==0||(nb_octets == -1))
-    return -1;
-  return 0;
+    return (long)-1;
+  return resultat;
 }
