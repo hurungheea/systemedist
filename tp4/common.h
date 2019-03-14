@@ -1,5 +1,5 @@
-#ifndef _COMMON_H_
-#define _COMMON_H_
+#ifndef C_COMMON_H
+#define C_COMMON_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,20 +10,6 @@
 #include <errno.h>
 #include <getopt.h>
 #include <string.h>
-
-enum requete_t
-{
-  FACTORIEL,
-  PUISSANCE,
-  ANALYSE
-};
-
-typedef struct
-{
-  enum requete_t type;
-  int taille;
-}requete;
-
 
 int creerSocketUDP(int port);
 
