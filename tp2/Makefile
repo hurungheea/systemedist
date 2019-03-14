@@ -1,6 +1,6 @@
 CC = gcc
-exec = client-td1.out
-exes = server-td1.out
+exec = client-td2.out
+exes = server-td2.out
 
 all: $(exes) $(exec)
 
