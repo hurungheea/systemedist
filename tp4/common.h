@@ -11,6 +11,17 @@
 #include <getopt.h>
 #include <string.h>
 
+enum requete_t
+{
+  FACTORIEL,PUISSANCE,STATS,FIN
+};
+
+typedef struct
+{
+  enum requete_t type;
+  int taille;
+}requete;
+
 int creerSocketUDP(int port);
 
 #endif

@@ -7,9 +7,12 @@
 #include <errno.h>
 #include <getopt.h>
 #include <string.h>
+#include "calculs.h"
 #include "common.h"
 
 #define TAILLEBUF 20
+
+void traiter_communication(int socket_service);
 
 int main(int argc, char const *argv[])
 {
@@ -43,26 +46,46 @@ int main(int argc, char const *argv[])
     socket_service = accept(socket_ecoute,(struct sockaddr*)&addr_client,&lg_addr);
     if(socket_service == -1)
     {
-      perror("erreur accept");
+      printf("erreur accept %d\n",errno);
       exit(1);
     }
     if(fork() == 0)
     {
       close(socket_ecoute);
       printf("coucou :)\n");
+      traiter_communication(socket_service);
+      exit(0);
     }
-
   }
-
-  nb_octets = read(socket_service,message,TAILLEBUF);
-  chaine_recue = (char*)malloc(nb_octets * sizeof(char));
-  memcpy(chaine_recue,message,nb_octets);
-  if(write(socket_service,reponse,strlen(reponse)+1) == -1)
-  {
-    perror("error\n");
-  }
-
-  close(socket_service);
-  close(socket_ecoute);
   return 0;
+}
+
+void traiter_communication(int socket_service)
+{
+  requete req;
+  char* message;
+  int taille, nb_octets = 0, finis = 0;
+  int nb;
+  while(!finis)
+  {
+    nb_octets = read(socket_service,&req,sizeof(req));
+    if((nb_octets == 0)||(nb_octets == -1))
+    {
+      finis = 1;
+      break;
+    }
+    switch (req.type)
+    {
+      case FIN:
+        finis = -1;
+        break;
+
+      case FACTORIEL:
+        nb_octets = read(socket_service,&nb,sizeof(int));
+        long res = factoriel(nb);
+        nb_octets = write(socket_service,&req,sizeof(req));
+        break;
+    }
+  }
+  close(socket_service);
 }

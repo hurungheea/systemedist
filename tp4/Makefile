@@ -5,7 +5,7 @@ exes = server-td4.out
 all: $(exes) $(exec)
 
 $(exes): server.o
-	$(CC) -g -o $(exes) server.c common.c
+	$(CC) -g -o $(exes) server.c common.c calculs.c
 
 $(exec): client.o
 	$(CC) -g -o $(exec) client.c common.c

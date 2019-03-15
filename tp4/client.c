@@ -8,6 +8,7 @@
 #include <getopt.h>
 #include <string.h>
 #include "common.h"
+#include "calculs.h"
 
 #define TAILLEBUF 20
 
