@@ -26,7 +26,7 @@ void analyser_donnees(int donnees[], int taille, struct res_analyse_donnees *res
     if (donnees[i] < res -> min) res -> min = donnees[i];
     somme += donnees[i];
   }
-  res -> moy = ((float)somme) / taille;
+  res -> moy = (((float)somme) / taille);
 }
 
 long puissance(int nb, int puiss)

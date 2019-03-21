@@ -14,7 +14,6 @@ int creerSocketUDP(int port)
   addr_local.sin_family = AF_INET;
   addr_local.sin_port = htons(port);
   addr_local.sin_addr.s_addr=htonl(INADDR_ANY);
-  printf("ecoute sur le port :=> %d\n",addr_local.sin_port);
 
   if(bind (sock, (struct sockaddr*) &addr_local, sizeof(addr_local))== -1)
   {
