@@ -13,6 +13,7 @@
 #define TAILLEBUF 20
 
 void choixMenu();
+void clientPuiss(sock);
 void clientFact(int sock);
 
 int main(int argc, char *argv[])
@@ -21,7 +22,7 @@ int main(int argc, char *argv[])
   struct hostent* host_serveur;
   socklen_t lg;
   int sock, port = 4000;
-  char* hostname = "localhost";
+  char* hostname = "10.1.13.176";
   char *msg = "bonjour";
   char buffer[TAILLEBUF];
   char* reponse;
@@ -64,21 +65,14 @@ int main(int argc, char *argv[])
       break;
 
     case 50:
-
+      clientPuiss(sock);
       break;
 
     case 51:
 
       break;
   }
-  /*
-  nb_octets = write(sock,msg,strlen(msg)+1);
-  nb_octets = read(sock,buffer,TAILLEBUF);
-  */
-  printf("reponse reçu : %s\n","buffer");
-
   close(sock);
-
   return 0;
 }
 
@@ -89,22 +83,34 @@ void choixMenu()
   printf("3. Moyenne\n");
 }
 
+void clientPuiss(sock)
+{
+  char *buffy;
+
+}
+
 void clientFact(int sock)
 {
-  int val,nb_octets;
+  int val,nb_octets,result = 0;
 
-  printf("Factoriel : de combien ?");
-  scanf("%d\n",&val);
+  printf("Factoriel : de combien ? ..");
+  scanf("%d",&val);
   requete fact;
+
   fact.type = FACTORIEL;
   fact.taille = 0;
+
   char* buffy;
+
   buffy = malloc(sizeof(fact) + sizeof(int));
+
   memcpy(buffy,&fact,sizeof(fact));
   memcpy(buffy+sizeof(fact),&val,sizeof(int));
+
   nb_octets = write(sock,buffy,sizeof(buffy));
+
   if(nb_octets == 0 || nb_octets == -1)
       printf("ERREUR\n");
-  printf("Envoyé fact\n");
-  nb_octets = write(sock,&val,sizeof(int));
+  nb_octets = read(sock,&result,sizeof(int));
+  printf("la factoriel de %d est : %d\n",val,result);
 }

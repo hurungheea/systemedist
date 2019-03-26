@@ -85,7 +85,8 @@ void traiter_communication(int socket_service)
         nb_octets = read(socket_service,&nb,sizeof(int));
         printf("val = %d\n",nb);
         long res = factoriel(nb);
-        nb_octets = write(socket_service,&req,sizeof(req));
+        printf("res : %ld\n",res);
+        nb_octets = write(socket_service,&res,sizeof(int));
         break;
     }
   }
