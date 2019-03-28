@@ -15,13 +15,14 @@
 void choixMenu();
 void clientPuiss(int sock);
 void clientFact(int sock);
+void moyenClient(int sock);
 
 int main(int argc, char *argv[])
 {
   static struct sockaddr_in addr_serveur;
   struct hostent* host_serveur;
   socklen_t lg;
-  int sock, port = 4000;
+  int sock, port = 8080;
   char* hostname = "localhost";
   char *msg = "bonjour";
   char buffer[TAILLEBUF];
@@ -57,7 +58,7 @@ int main(int argc, char *argv[])
   {
     choixMenu();
     k = getchar();
-  }while(k<49||k>51);
+  }while(k<49||k>52);
   switch (k)
   {
     case 49:
@@ -69,6 +70,10 @@ int main(int argc, char *argv[])
       break;
 
     case 51:
+      moyenClient(sock);
+      break;
+
+    case 52:
 
       break;
   }
@@ -127,11 +132,45 @@ void clientFact(int sock)
   memcpy(buffy,&fact,sizeof(fact));
   memcpy(buffy+sizeof(fact),&val,sizeof(int));
 
-  nb_octets = write(sock,buffy,sizeof(buffy));
-  nb_octets = write(sock,&val,sizeof(int));
+  nb_octets = write(sock,buffy,sizeof(fact) + sizeof(int));
 
   if(nb_octets == 0 || nb_octets == -1)
       printf("ERREUR\n");
   nb_octets = read(sock,&result,sizeof(int));
   printf("la factoriel de %d est : %ld\n",val,result);
+}
+
+void moyenClient(int sock)
+{
+  int *val;
+  int k, nb_octets = 0;
+  int N = 1;
+  char* buffy;
+  long result;
+
+  printf("De combien de valeur voulez vous faire la moyenne ? : \n");
+  scanf("%d",&N);
+  val = malloc(sizeof(int) * N);
+  for(int i=0; i < N; i++)
+  {
+    printf("Entre le %d eme nombre", i+1);
+    scanf("%d", &k);
+    val[i]=k;
+  }
+  requete moy;
+
+  moy.type = STATS;
+  moy.taille = N;
+
+  buffy = malloc(sizeof(moy)+ sizeof(int) * N);
+  memcpy(buffy, &moy, sizeof(moy));
+  memcpy(buffy+sizeof(moy), val, sizeof(int) * N);
+
+  nb_octets = write(sock, buffy, sizeof(moy)+ sizeof(int) * N);
+  if(nb_octets == 0 || nb_octets == -1)
+      printf("ERREUR\n");
+  nb_octets = read(sock,&result,sizeof(long));
+  if(nb_octets == 0 || nb_octets == -1)
+      printf("ERREUR\n");
+  printf("la moyenne est : %ld\n",result);
 }

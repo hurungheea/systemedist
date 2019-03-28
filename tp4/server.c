@@ -22,7 +22,7 @@ int main(int argc, char const *argv[])
   static struct sockaddr_in addr_serveur;
   // taille de l'addresse socket
   int lg_addr;
-  int port = 4000;
+  int port = 8080;
   int socket_ecoute,socket_service;
   char message[TAILLEBUF];
   char *chaine_recue;
@@ -95,6 +95,13 @@ void traiter_communication(int socket_service)
         nb_octets = write(socket_service,&res,sizeof(int));
         printf("le client nous a demandé PUISSANCE de %d exposant %d = %ld\n",nb,expt,res);
         break;
+
+      case STATS:
+        struct res_analyse_donnees c;
+        int* tab = malloc(sizeof (int) * req.taille);
+        nb_octets = read(socket_service, tab, sizeof(tab));
+        analyser_donnees(*tab, req.taille,&c);
+        
     }
   }
   close(socket_service);
