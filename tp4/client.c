@@ -13,7 +13,7 @@
 #define TAILLEBUF 20
 
 void choixMenu();
-void clientPuiss(sock);
+void clientPuiss(int sock);
 void clientFact(int sock);
 
 int main(int argc, char *argv[])
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
   struct hostent* host_serveur;
   socklen_t lg;
   int sock, port = 4000;
-  char* hostname = "10.1.13.176";
+  char* hostname = "localhost";
   char *msg = "bonjour";
   char buffer[TAILLEBUF];
   char* reponse;
@@ -81,26 +81,46 @@ void choixMenu()
   printf("1. Factoriel\n");
   printf("2. Puissance\n");
   printf("3. Moyenne\n");
+  printf("4. Fin\n");
 }
 
-void clientPuiss(sock)
+void clientPuiss(int sock)
 {
   char *buffy;
+  int nb,expt,nb_octets = 0;
+  requete puiss;
+  long result = 0;
 
+  puiss.type = PUISSANCE;
+  puiss.taille = 0;
+
+  buffy = malloc(sizeof(puiss) + sizeof(int));
+  memcpy(buffy,&puiss,sizeof(puiss));
+
+  nb_octets = write(sock,buffy,sizeof(buffy));
+
+  printf("Puissance : de ? ... ");
+  scanf("%d",&nb);
+  nb_octets = write(sock,&nb,sizeof(int));
+  printf("Puissance : exposant ? ");
+  scanf("%d",&expt);
+  nb_octets = write(sock,&expt,sizeof(int));
+  nb_octets = read(sock,&result,sizeof(int));
+  printf("la puissance de %d exposant %d est : %ld\n",nb,expt,result);
 }
 
 void clientFact(int sock)
 {
-  int val,nb_octets,result = 0;
+  int val,nb_octets = 0;
+  long result = 0;
+  char* buffy;
 
-  printf("Factoriel : de combien ? ..");
+  printf("Factoriel : de combien ? .. ");
   scanf("%d",&val);
   requete fact;
 
   fact.type = FACTORIEL;
   fact.taille = 0;
-
-  char* buffy;
 
   buffy = malloc(sizeof(fact) + sizeof(int));
 
@@ -108,9 +128,10 @@ void clientFact(int sock)
   memcpy(buffy+sizeof(fact),&val,sizeof(int));
 
   nb_octets = write(sock,buffy,sizeof(buffy));
+  nb_octets = write(sock,&val,sizeof(int));
 
   if(nb_octets == 0 || nb_octets == -1)
       printf("ERREUR\n");
   nb_octets = read(sock,&result,sizeof(int));
-  printf("la factoriel de %d est : %d\n",val,result);
+  printf("la factoriel de %d est : %ld\n",val,result);
 }

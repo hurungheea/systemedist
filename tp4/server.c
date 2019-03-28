@@ -65,7 +65,8 @@ void traiter_communication(int socket_service)
   requete req;
   char* message;
   int taille, nb_octets = 0, finis = 0;
-  int nb;
+  int nb,expt;
+  long res = 0;
   while(!finis)
   {
     nb_octets = read(socket_service,&req,sizeof(req));
@@ -81,12 +82,18 @@ void traiter_communication(int socket_service)
         break;
 
       case FACTORIEL:
-        printf("FACTO\n");
         nb_octets = read(socket_service,&nb,sizeof(int));
-        printf("val = %d\n",nb);
-        long res = factoriel(nb);
-        printf("res : %ld\n",res);
+        res = factoriel(nb);
         nb_octets = write(socket_service,&res,sizeof(int));
+        printf("le client nous a demandé FACTORIEL de %d = %ld\n",nb,res);
+        break;
+
+      case PUISSANCE:
+        nb_octets = read(socket_service,&nb,sizeof(int));
+        nb_octets = read(socket_service,&expt,sizeof(int));
+        res = puissance(nb,expt);
+        nb_octets = write(socket_service,&res,sizeof(int));
+        printf("le client nous a demandé PUISSANCE de %d exposant %d = %ld\n",nb,expt,res);
         break;
     }
   }
