@@ -13,9 +13,10 @@
 #define TAILLEBUF 20
 
 void choixMenu();
-void clientPuiss(int sock);
 void clientFact(int sock);
+void clientPuiss(int sock);
 void moyenClient(int sock);
+void fermerConnexion(int sock);
 
 int main(int argc, char *argv[])
 {
@@ -74,7 +75,7 @@ int main(int argc, char *argv[])
       break;
 
     case 52:
-
+      fermerConnexion(sock);
       break;
   }
   close(sock);
@@ -111,7 +112,7 @@ void clientPuiss(int sock)
   scanf("%d",&expt);
   nb_octets = write(sock,&expt,sizeof(int));
   nb_octets = read(sock,&result,sizeof(int));
-  printf("la puissance de %d exposant %d est : %ld\n",nb,expt,result);
+  printf("\033[32mla puissance de %d exposant %d est : %ld\033[0m\n",nb,expt,result);
 }
 
 void clientFact(int sock)
@@ -137,7 +138,7 @@ void clientFact(int sock)
   if(nb_octets == 0 || nb_octets == -1)
       printf("ERREUR\n");
   nb_octets = read(sock,&result,sizeof(int));
-  printf("la factoriel de %d est : %ld\n",val,result);
+  printf("\033[32mla factoriel de %d est : %ld\033[0m\n",val,result);
 }
 
 void moyenClient(int sock)
@@ -172,5 +173,21 @@ void moyenClient(int sock)
   nb_octets = read(sock,&result,sizeof(long));
   if(nb_octets == 0 || nb_octets == -1)
       printf("ERREUR\n");
-  printf("la moyenne est : %ld\n",result);
+  printf("\033[32mla moyenne est : %ld\033[0m\n",result);
+}
+
+void fermerConnexion(int sock)
+{
+  int nb_octets = 0;
+  char *buffy;
+  requete end;
+
+  end.type = FIN;
+  end.taille = 0;
+  buffy = malloc(sizeof(end));
+  memcpy(buffy,&end,sizeof(end));
+
+  nb_octets = write(sock,&end,sizeof(end));
+  if(nb_octets == 0 || nb_octets == -1)
+      printf("ERREUR\n");
 }
