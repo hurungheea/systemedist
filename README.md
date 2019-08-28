@@ -1,2 +1,2 @@
-# TP_systeme_distribue
+# TP système distribué
 
